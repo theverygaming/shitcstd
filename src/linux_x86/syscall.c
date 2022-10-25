@@ -5,8 +5,8 @@ void sys_exit(int error_code) {
     syscall(1, (uint32_t)error_code, 0, 0, 0, 0, 0);
 }
 
-void sys_write(uint32_t fd, const char *buf, size_t count) {
-    syscall(4, fd, (uint32_t)buf, count, 0, 0, 0);
+int sys_write(uint32_t fd, const char *buf, size_t count) {
+    return syscall(4, fd, (uint32_t)buf, count, 0, 0, 0);
 }
 
 uint32_t sys_read(uint32_t fd, char *buf, size_t count) {

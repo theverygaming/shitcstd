@@ -11,7 +11,6 @@ syscall:
     mov 4 * 14(%esp), %edi
     mov 4 * 15(%esp), %ebp
     int $0x80
-    mov %eax, -1(%esp)
+    mov %eax, 4 * 7(%esp)
     popa
-    mov 4 * -6(%esp), %eax
     ret

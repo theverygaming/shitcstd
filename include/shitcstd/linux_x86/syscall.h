@@ -6,7 +6,7 @@ extern uint32_t syscall(uint32_t syscall_num, uint32_t a1, uint32_t a2, uint32_t
 typedef int pid_t;
 
 void sys_exit(int error_code);
-void sys_write(uint32_t fd, const char *buf, size_t count);
+int sys_write(uint32_t fd, const char *buf, size_t count);
 uint32_t sys_read(uint32_t fd, char *buf, size_t count);
 void sys_waitpid(pid_t pid, int *stat_addr, int options);
 pid_t sys_fork();
