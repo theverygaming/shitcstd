@@ -1,5 +1,5 @@
-#include <shitcstd/stdlib.h>
-#include <shitcstd/linux_x86/syscall.h>
+#include <stdlib.h>
+#include <linux_x86/syscall.h>
 
 void sys_exit(int error_code) {
     syscall(1, (uint32_t)error_code, 0, 0, 0, 0, 0);

@@ -1,7 +1,10 @@
-#include <shitcstd/stdbool.h>
-#include <shitcstd/stdint.h>
-#include <shitcstd/stdlib.h>
-#include <shitcstd/linux_x86/syscall.h>
+#include <math.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <linux_x86/syscall.h>
 
 void exit(int status) {
     sys_exit(status);

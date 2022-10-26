@@ -1,5 +1,5 @@
 #pragma once
-#include <shitcstd/stdint.h>
+#include <stdint.h>
 
 extern uint32_t syscall(uint32_t syscall_num, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t a4, uint32_t a5, uint32_t a6);
 
