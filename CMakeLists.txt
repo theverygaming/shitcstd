@@ -10,6 +10,9 @@ include_directories(BEFORE SYSTEM include)
 
 list(APPEND SOURCES 
     src/stdlib.c
+    src/time.c
+    src/unistd.c
+    src/sys/wait.c
     src/linux_x86/syscall.c
     src/linux_x86/syscall_asm.S
     src/linux_x86/crt0.S)

@@ -1,5 +1,5 @@
-#include <stdlib.h>
 #include <linux_x86/syscall.h>
+#include <stdlib.h>
 
 void sys_exit(int error_code) {
     syscall(1, (uint32_t)error_code, 0, 0, 0, 0, 0);
@@ -23,6 +23,14 @@ pid_t sys_fork() {
 
 void sys_execve(const char *filename, char **argv, const char *const *envp) {
     syscall(11, (uint32_t)filename, (uint32_t)argv, (uint32_t)envp, 0, 0, 0);
+}
+
+int sys_chdir(const char *filename) {
+    return syscall(12, (uint32_t)filename, 0, 0, 0, 0, 0);
+}
+
+void sys_time(time_t *tloc) {
+    syscall(13, (uint32_t)tloc, 0, 0, 0, 0, 0);
 }
 
 int sys_sysinfo(struct sysinfo *info) {

@@ -1,10 +1,11 @@
+#include <linux_x86/syscall.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <linux_x86/syscall.h>
+#include <unistd.h>
 
 void exit(int status) {
     sys_exit(status);
@@ -90,6 +91,31 @@ const char *strstr(const char *str1, const char *str2) {
         }
     }
     return 0;
+}
+
+char *strcpy(char *destination, const char *source) {
+    size_t len = strlen(source);
+    memcpy(destination, source, len + 1);
+    return destination;
+}
+
+char *strsep(char **restrict stringp, const char *restrict delim) {
+    if (*stringp == NULL) {
+        return NULL;
+    }
+
+    char *oldstart = *stringp;
+
+    char *newend = *stringp + strcspn(*stringp, delim);
+
+    if (*newend != '\0') {
+        *newend++ = '\0';
+    } else {
+        newend = NULL;
+    }
+
+    *stringp = newend;
+    return oldstart;
 }
 
 size_t sscanf(const char *str, const char *fmt, ...) {
@@ -198,6 +224,18 @@ int printf(const char *fmt, ...) {
 
     va_end(args);
     return chars_written;
+}
+
+int getchar() {
+    char buf;
+    sys_read(STDIN_FILENO, &buf, 1);
+    return (int)buf;
+}
+
+void perror(const char *s) {
+    if (s != NULL) {
+        printf("%s: \n", s);
+    }
 }
 
 double sin(double x) {
