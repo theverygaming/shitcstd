@@ -5,20 +5,24 @@ void sys_exit(int error_code) {
     syscall(1, (uint32_t)error_code, 0, 0, 0, 0, 0);
 }
 
-int sys_write(uint32_t fd, const char *buf, size_t count) {
-    return syscall(4, fd, (uint32_t)buf, count, 0, 0, 0);
+pid_t sys_fork() {
+    return syscall(2, 0, 0, 0, 0, 0, 0);
 }
 
 uint32_t sys_read(uint32_t fd, char *buf, size_t count) {
     return syscall(3, fd, (uint32_t)buf, count, 0, 0, 0);
 }
 
-void sys_waitpid(pid_t pid, int *start_addr, int options) {
-    syscall(7, pid, (uint32_t)start_addr, options, 0, 0, 0);
+int sys_write(uint32_t fd, const char *buf, size_t count) {
+    return syscall(4, fd, (uint32_t)buf, count, 0, 0, 0);
 }
 
-pid_t sys_fork() {
-    return syscall(2, 0, 0, 0, 0, 0, 0);
+int sys_open(const char *filename, int flags, umode_t mode) {
+    return syscall(5, filename, flags, mode, 0, 0, 0);
+}
+
+void sys_waitpid(pid_t pid, int *start_addr, int options) {
+    syscall(7, pid, (uint32_t)start_addr, options, 0, 0, 0);
 }
 
 void sys_execve(const char *filename, char **argv, const char *const *envp) {

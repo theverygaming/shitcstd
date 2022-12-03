@@ -1,18 +1,34 @@
 #pragma once
 #include <stddef.h>
-#include <time.h>
 #include <sys/types.h>
+#include <time.h>
 
 extern uint32_t syscall(uint32_t syscall_num, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t a4, uint32_t a5, uint32_t a6);
 
 void sys_exit(int error_code);
-int sys_write(uint32_t fd, const char *buf, size_t count);
-uint32_t sys_read(uint32_t fd, char *buf, size_t count);
-void sys_waitpid(pid_t pid, int *stat_addr, int options);
 pid_t sys_fork();
+uint32_t sys_read(uint32_t fd, char *buf, size_t count);
+int sys_write(uint32_t fd, const char *buf, size_t count);
+
+#define O_RDONLY 0
+#define O_WRONLY 1
+#define O_RDWR 2
+#define O_CREAT 100
+#define O_EXCL 200
+#define O_NOCTTY 400
+#define O_TRUNC 1000
+#define O_APPEND 2000
+#define O_NONBLOCK 4000
+#define O_NDELAY O_NONBLOCK
+#define O_SYNC 10000
+#define O_FSYNC O_SYNC
+#define O_ASYNC 20000
+typedef unsigned short umode_t;
+int sys_open(const char *filename, int flags, umode_t mode);
+void sys_waitpid(pid_t pid, int *stat_addr, int options);
 void sys_execve(const char *filename, char **argv, const char *const *envp);
 int sys_chdir(const char *filename);
-void sys_time(time_t* tloc);
+void sys_time(time_t *tloc);
 
 // https://man7.org/linux/man-pages/man2/sysinfo.2.html
 struct sysinfo {

@@ -214,6 +214,13 @@ int printf(const char *fmt, ...) {
                 chars_written += strlen(ret);
                 break;
             }
+            case 'c': {
+                fmt += 1;
+                char arg = va_arg(args, int);
+                sys_write(1, &arg, 1);
+                chars_written++;
+                break;
+            }
             }
         }
         int count = strcspn(fmt, "%");
