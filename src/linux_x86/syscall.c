@@ -18,14 +18,14 @@ int sys_write(uint32_t fd, const char *buf, size_t count) {
 }
 
 int sys_open(const char *filename, int flags, umode_t mode) {
-    return syscall(5, filename, flags, mode, 0, 0, 0);
+    return syscall(5, (uint32_t)filename, flags, mode, 0, 0, 0);
 }
 
 void sys_waitpid(pid_t pid, int *start_addr, int options) {
     syscall(7, pid, (uint32_t)start_addr, options, 0, 0, 0);
 }
 
-void sys_execve(const char *filename, char **argv, const char *const *envp) {
+void sys_execve(const char *filename, char *const *argv, const char *const *envp) {
     syscall(11, (uint32_t)filename, (uint32_t)argv, (uint32_t)envp, 0, 0, 0);
 }
 
