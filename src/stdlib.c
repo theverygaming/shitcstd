@@ -125,6 +125,9 @@ size_t sscanf(const char *str, const char *fmt, ...) {
     size_t instrcnt = 0;
     size_t items_filled = 0;
     while (*fmt) {
+        if (str[instrcnt] == 0) {
+            goto ret;
+        }
         if (*fmt == '%') {
             fmt++;
             switch (*fmt) {
@@ -132,16 +135,19 @@ size_t sscanf(const char *str, const char *fmt, ...) {
                 char fmtcut[100];
                 size_t cspn = strcspn(fmt + 1, "%");
                 if (cspn >= 100) {
-                    return items_filled;
+                    goto ret;
                 }
                 memcpy(fmtcut, fmt + 1, cspn);
                 fmtcut[cspn] = '\0';
 
                 size_t cpcnt = (size_t)strstr(&str[instrcnt], fmtcut);
                 if (!cpcnt) {
-                    return items_filled;
+                    goto ret;
                 }
                 cpcnt -= (size_t)&str[instrcnt];
+                if (!cpcnt) {
+                    cpcnt = strlen(&str[instrcnt]);
+                }
                 char *arg = va_arg(args, char *);
                 memcpy((void *)arg, (void *)&str[instrcnt], cpcnt);
                 instrcnt += cpcnt - 1;
@@ -149,12 +155,23 @@ size_t sscanf(const char *str, const char *fmt, ...) {
                 items_filled++;
                 break;
             }
+            case 'l': {
+                if (*(fmt + 1) == 'u') {
+                    fmt++;
+                    unsigned long int *arg = va_arg(args, unsigned long int *);
+                    char *str_after;
+                    *arg = strtoul(&str[instrcnt], &str_after, 10);
+                    instrcnt += (str_after - &str[instrcnt]) - 1;
+                    items_filled++;
+                    break;
+                }
+            }
             }
         }
         instrcnt++;
         fmt++;
     }
-
+ret:
     va_end(args);
     return items_filled;
 }
@@ -182,6 +199,22 @@ char *itoa(size_t value, char *str, size_t base) {
     }
 
     return str;
+}
+
+unsigned long int strtoul(const char *str, char **endptr, int base) {
+    unsigned long int num = 0;
+    while (*str) {
+        if (*str < '0' || *str > '9') {
+            break;
+        }
+        uint8_t current_num = *str - '0';
+        num = (num * base) + current_num;
+        str++;
+    }
+    if (endptr != NULL) {
+        *endptr = (char *)str;
+    }
+    return num;
 }
 
 int printf(const char *fmt, ...) {
