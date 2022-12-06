@@ -8,10 +8,16 @@ add_compile_options(-fno-builtin -fno-stack-protector -nostdinc)
 
 include_directories(BEFORE SYSTEM include)
 
-list(APPEND SOURCES 
+list(APPEND SOURCES
+    src/arith64.c
+    src/string.c
+    src/strings.c
+    src/stdio.c
+    src/unistd.c
+    src/malloc.c
+    src/math.c
     src/stdlib.c
     src/time.c
-    src/unistd.c
     src/sys/wait.c
     src/linux_x86/syscall.c
     src/linux_x86/syscall_asm.S

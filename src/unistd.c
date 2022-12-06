@@ -1,5 +1,6 @@
 #include <linux_x86/syscall.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -25,4 +26,16 @@ int chdir(const char *path) {
 int execvp(const char *file, char *const argv[]) { // TODO: make it _the real_ exevp
     sys_execve(file, argv, NULL);
     return -1;
+}
+
+void *sbrk(intptr_t increment) {
+    void *current = (void *)sys_brk(NULL);
+    if (increment == 0) {
+        return current;
+    }
+    void *new = ((char *)current) + increment;
+    if ((void *)sys_brk(new) == current) {
+        return (void *)-1;
+    }
+    return current;
 }
