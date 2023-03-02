@@ -25,3 +25,7 @@ list(APPEND SOURCES
 
 add_library(shitcstd STATIC ${SOURCES})
 set_target_properties(shitcstd PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32")
+
+set(CMAKE_INSTALL_PREFIX /usr CACHE PATH "Set cmake Default to /usr" FORCE)
+
+install(TARGETS shitcstd DESTINATION lib)
