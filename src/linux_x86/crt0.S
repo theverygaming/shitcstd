@@ -20,6 +20,6 @@ _start:
     mov %eax, %ebx // main returns in eax
     mov $1, %eax // sys_exit
     int $0x80
+    ud2
 .loop:
-    hlt // if we are here something went wrong badly
     jmp .loop
