@@ -156,13 +156,17 @@ int strcmp(const char *str1, const char *str2) {
 }
 
 int strncmp(const char *str1, const char *str2, size_t num) {
-    for (size_t i = 0; (i < num) && *str1; i++) {
+    size_t i;
+    for (i = 0; (i < num) && *str1; i++) {
         if (*str1 != *str2) {
             return *((const unsigned char *)str1) - *((const unsigned char *)str2);
             break;
         }
         str1++;
         str2++;
+    }
+    if (i == num) {
+        return 0;
     }
     return *((const unsigned char *)str1) - *((const unsigned char *)str2);
 }
