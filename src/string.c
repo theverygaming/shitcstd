@@ -164,5 +164,5 @@ int strncmp(const char *str1, const char *str2, size_t num) {
         str1++;
         str2++;
     }
-    return 0;
+    return *((const unsigned char *)str1) - *((const unsigned char *)str2);
 }
