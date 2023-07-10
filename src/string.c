@@ -107,6 +107,7 @@ char *strncpy(char *destination, const char *source, size_t num) {
             }
         }
         *destination = c;
+        destination++;
     }
     return destination_s;
 }
