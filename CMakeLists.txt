@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.7)
 project(shitcstd)
 
 set(CMAKE_C_STANDARD 99)
