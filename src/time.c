@@ -1,6 +1,6 @@
 #include <time.h>
 #include <stddef.h>
-#include <linux_x86/syscall.h>
+#include <linux/syscall.h>
 
 time_t time(time_t *arg) {
     time_t current_time;

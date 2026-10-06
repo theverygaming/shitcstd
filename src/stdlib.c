@@ -1,4 +1,4 @@
-#include <linux_x86/syscall.h>
+#include <linux/syscall.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>

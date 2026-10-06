@@ -1,4 +1,4 @@
-#include <linux_x86/syscall.h>
+#include <linux/syscall.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <time.h>

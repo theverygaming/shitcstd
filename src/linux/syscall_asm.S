@@ -2,6 +2,7 @@
 
 .global syscall
 syscall:
+#if defined(__i386__)
     pusha
     mov 4 * 9(%esp), %eax
     mov 4 * 10(%esp), %ebx
@@ -14,3 +15,17 @@ syscall:
     mov %eax, 4 * 7(%esp)
     popa
     ret
+#elif defined(__x86_64__)
+    mov %rdi, %rax
+    mov %rsi, %rdi
+    mov %rdx, %rsi
+    mov %rcx, %rdx
+    mov %r8, %r10
+    mov %r9, %r8
+    mov 8(%rsp), %r9
+    syscall
+    // return in %rax, fits ABI
+    ret
+#else
+#error "unsupported architecture"
+#endif

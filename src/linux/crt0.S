@@ -3,8 +3,9 @@
 .extern main
 
 _start:
+#if defined(__i386__)
     xor %ebp, %ebp // mark end of stack frames
-    
+
     mov (%esp), %edi // argc
     lea 4(%esp), %esi // argv
     lea 8(%esp, %edi, 4), %edx // envp
@@ -15,7 +16,7 @@ _start:
     xor %eax, %eax
 
     call main // call C start function main(int argc, char* argv[], char* envp_str)
-    
+
     // exit with return value of main
     mov %eax, %ebx // main returns in eax
     mov $1, %eax // sys_exit
@@ -23,3 +24,16 @@ _start:
     ud2
 .loop:
     jmp .loop
+#elif defined(__x86_64__)
+    call main // call C start function main(int argc, char* argv[], char* envp_str)
+
+    // exit with return value of main
+    mov %rax, %rdi // main returns in rax
+    mov $1, %rax // sys_exit
+    syscall
+    ud2
+.loop:
+    jmp .loop
+#else
+#error "unsupported architecture"
+#endif

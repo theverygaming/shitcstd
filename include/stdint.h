@@ -1,19 +1,30 @@
 #pragma once
 
-typedef unsigned char uint8_t;
-typedef unsigned short uint16_t;
-typedef unsigned int uint32_t;
-typedef unsigned long long uint64_t;
+#if defined(__UINT8_TYPE__) && defined(__UINT16_TYPE__) && defined(__UINT32_TYPE__) && defined(__UINT64_TYPE__)
+typedef __UINT8_TYPE__ uint8_t;
+typedef __UINT16_TYPE__ uint16_t;
+typedef __UINT32_TYPE__ uint32_t;
+typedef __UINT64_TYPE__ uint64_t;
+#else
+#error "compiler does not provide __UINTxx_TYPE__"
+#endif
 
-typedef char int8_t;
-typedef short int16_t;
-typedef int int32_t;
-typedef long long int64_t;
+#if defined(__INT8_TYPE__) && defined(__INT16_TYPE__) && defined(__INT32_TYPE__) && defined(__INT64_TYPE__)
+typedef __INT8_TYPE__ int8_t;
+typedef __INT16_TYPE__ int16_t;
+typedef __INT32_TYPE__ int32_t;
+typedef __INT64_TYPE__ int64_t;
+#else
+#error "compiler does not provide __INTxx_TYPE__"
+#endif
 
-typedef uint32_t uintptr_t;
-typedef int32_t intptr_t;
-
-typedef int64_t intmax_t;
-typedef uint64_t uintmax_t;
-
-typedef int32_t wchar_t;
+#if defined(__UINTPTR_TYPE__) && defined(__INTPTR_TYPE__) && defined(__UINTPTR_MAX__) && defined(__INTPTR_MAX__)
+typedef __UINTPTR_TYPE__ uintptr_t;
+typedef __INTPTR_TYPE__ intptr_t;
+#undef UINTPTR_MAX
+#undef INTPTR_MAX
+#define UINTPTR_MAX __UINTPTR_MAX__
+#define INTPTR_MAX  __INTPTR_MAX__
+#else
+#error "compiler does not provide __UINTPTR_TYPE__ ,__INTPTR_TYPE__, __UINTPTR_MAX__ or __INTPTR_MAX__"
+#endif

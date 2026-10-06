@@ -3,12 +3,20 @@
 #include <sys/types.h>
 #include <time.h>
 
-extern uint32_t syscall(uint32_t syscall_num, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t a4, uint32_t a5, uint32_t a6);
+#if defined(__i386__)
+typedef uint32_t linux_sysc_arg_t;
+#elif defined(__x86_64__)
+typedef uint64_t linux_sysc_arg_t;
+#else
+#error "unsupported architecture"
+#endif
+
+extern linux_sysc_arg_t syscall(linux_sysc_arg_t syscall_num, linux_sysc_arg_t a1, linux_sysc_arg_t a2, linux_sysc_arg_t a3, linux_sysc_arg_t a4, linux_sysc_arg_t a5, linux_sysc_arg_t a6);
 
 void sys_exit(int error_code);
 pid_t sys_fork();
-uint32_t sys_read(uint32_t fd, void *buf, size_t count);
-int sys_write(uint32_t fd, const void *buf, size_t count);
+ssize_t sys_read(int fd, void *buf, size_t count);
+int sys_write(int fd, const void *buf, size_t count);
 
 #define O_RDONLY 0
 #define O_WRONLY 1
