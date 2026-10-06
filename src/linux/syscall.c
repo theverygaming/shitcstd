@@ -28,8 +28,8 @@ int sys_close(unsigned int fd) {
     return syscall(6, fd, 0, 0, 0, 0, 0);
 }
 
-void sys_waitpid(pid_t pid, int *start_addr, int options) {
-    syscall(7, pid, (linux_sysc_arg_t)start_addr, options, 0, 0, 0);
+pid_t sys_waitpid(pid_t pid, int *start_addr, int options) {
+    return syscall(7, pid, (linux_sysc_arg_t)start_addr, options, 0, 0, 0);
 }
 
 void sys_execve(const char *filename, char *const *argv, const char *const *envp) {
@@ -89,9 +89,9 @@ int sys_close(unsigned int fd) {
     return syscall(3, fd, 0, 0, 0, 0, 0);
 }
 
-void sys_waitpid(pid_t pid, int *start_addr, int options) {
+pid_t sys_waitpid(pid_t pid, int *start_addr, int options) {
     // this is actually wait4 but with these args it's equivalent
-    syscall(61, pid, (linux_sysc_arg_t)start_addr, options, 0, 0, 0);
+    return syscall(61, pid, (linux_sysc_arg_t)start_addr, options, 0, 0, 0);
 }
 
 void sys_execve(const char *filename, char *const *argv, const char *const *envp) {

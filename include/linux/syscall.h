@@ -34,7 +34,7 @@ int sys_write(int fd, const void *buf, size_t count);
 typedef unsigned short umode_t;
 int sys_open(const char *filename, int flags, umode_t mode);
 int sys_close(unsigned int fd);
-void sys_waitpid(pid_t pid, int *stat_addr, int options);
+pid_t sys_waitpid(pid_t pid, int *stat_addr, int options);
 void sys_execve(const char *filename, char *const *argv, const char *const *envp);
 int sys_chdir(const char *filename);
 void sys_time(time_t *tloc);

@@ -29,7 +29,7 @@ char *itoa(size_t value, char *str, size_t base) {
 
     size_t len = strlen(str);
 
-    for (int i = 0; i < len / 2; i++) {
+    for (size_t i = 0; i < len / 2; i++) {
         char c = str[i];
         str[i] = str[len - i - 1];
         str[len - i - 1] = c;
@@ -47,7 +47,6 @@ char *itoa_signed(ssize_t value, char *str, size_t base) {
     
     char *ptr = str;
 
-    int dig = 0;
     do {
         size_t mod = value % base;
         unsigned char start = '0';
@@ -64,7 +63,7 @@ char *itoa_signed(ssize_t value, char *str, size_t base) {
 
     size_t len = strlen(str);
 
-    for (int i = 0; i < len / 2; i++) {
+    for (size_t i = 0; i < len / 2; i++) {
         char c = str[i];
         str[i] = str[len - i - 1];
         str[len - i - 1] = c;

@@ -10,11 +10,9 @@ int strcasecmp(const char *s1, const char *s2) {
     char c2 = tolower(*s2);
     if (c1 == c2) {
         return 0;
-    }
-    if (c1 > c2) {
+    } else if (c1 > c2) {
         return 1;
-    }
-    if (c1 < c2) {
+    } else /* c1 < c2 */ {
         return -1;
     }
 }
