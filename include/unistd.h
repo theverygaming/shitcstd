@@ -14,3 +14,4 @@ char *getcwd(char *buf, size_t size);
 int chdir(const char *path);
 int execvp(const char *file, char *const argv[]);
 void *sbrk(intptr_t increment);
+int execve(const char *path, char *const argv[], char *const envp[]);

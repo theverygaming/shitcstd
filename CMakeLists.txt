@@ -10,24 +10,20 @@ enable_language(ASM)
 
 add_compile_options(-fno-builtin -fno-stack-protector -nostdinc -nostdlib)
 
-include_directories(BEFORE SYSTEM include)
+set(ABIS "linux")
+if(NOT ABI IN_LIST ABIS)
+    message(FATAL_ERROR "unsupported ABI '${ABI}', supported ABIs: ${ABIS}")
+endif()
 
-list(APPEND SOURCES
-    src/errno.c
-    src/string.c
-    src/strings.c
-    src/stdio.c
-    src/unistd.c
-    src/malloc.c
-    src/math.c
-    src/stdlib.c
-    src/time.c
-    src/sys/wait.c
-    src/linux/syscall.c
-    src/linux/syscall_asm.S
-    src/linux/crt0.S)
+include_directories(BEFORE SYSTEM include "abi/${ABI}/include")
 
-add_library(shitcstd STATIC ${SOURCES})
+file(GLOB_RECURSE SOURCES "src/*.c")
+
+file(GLOB_RECURSE ABI_SOURCES
+    "abi/${ABI}/src/*.c"
+    "abi/${ABI}/src/*.S")
+
+add_library(shitcstd STATIC ${SOURCES} ${ABI_SOURCES})
 
 target_compile_options(shitcstd PRIVATE -Wall -Wextra)
 

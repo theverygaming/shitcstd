@@ -56,7 +56,7 @@ int sys_sysinfo(struct sysinfo *info) {
     return syscall(116, (linux_sysc_arg_t)info, 0, 0, 0, 0, 0);
 }
 
-int sys_uname(struct utsname *buf) {
+int sys_uname(struct linux_utsname *buf) {
     return syscall(122, (linux_sysc_arg_t)buf, 0, 0, 0, 0, 0);
 }
 
@@ -118,7 +118,7 @@ int sys_sysinfo(struct sysinfo *info) {
     return syscall(99, (linux_sysc_arg_t)info, 0, 0, 0, 0, 0);
 }
 
-int sys_uname(struct utsname *buf) {
+int sys_uname(struct linux_utsname *buf) {
     // FIXME: this is actually newuname which has a different struct...
     return syscall(63, (linux_sysc_arg_t)buf, 0, 0, 0, 0, 0);
 }

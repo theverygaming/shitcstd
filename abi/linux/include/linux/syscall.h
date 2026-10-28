@@ -60,7 +60,7 @@ struct sysinfo {
 
 int sys_sysinfo(struct sysinfo *info);
 
-struct utsname {
+struct linux_utsname {
     char sysname[65];
     char nodename[65];
     char release[65];
@@ -69,5 +69,5 @@ struct utsname {
     char domainname[65];
 };
 
-int sys_uname(struct utsname *buf);
+int sys_uname(struct linux_utsname *buf);
 char *sys_getcwd(char *buf, size_t size);

@@ -28,6 +28,11 @@ int execvp(const char *file, char *const argv[]) { // TODO: make it _the real_ e
     return -1;
 }
 
+int execve(const char *path, char *const argv[], char *const envp[]) {
+    sys_execve(path, argv, (const char *const *)envp);
+    return -1;
+}
+
 void *sbrk(intptr_t increment) {
     void *current = (void *)sys_brk(NULL);
     if (increment == 0) {
