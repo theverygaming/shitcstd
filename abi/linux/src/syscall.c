@@ -32,7 +32,7 @@ pid_t sys_waitpid(pid_t pid, int *start_addr, int options) {
     return syscall(7, pid, (linux_sysc_arg_t)start_addr, options, 0, 0, 0);
 }
 
-void sys_execve(const char *filename, char *const *argv, const char *const *envp) {
+void sys_execve(const char *filename, char *const *argv, char *const *envp) {
     syscall(11, (linux_sysc_arg_t)filename, (linux_sysc_arg_t)argv, (linux_sysc_arg_t)envp, 0, 0, 0);
 }
 
@@ -94,7 +94,7 @@ pid_t sys_waitpid(pid_t pid, int *start_addr, int options) {
     return syscall(61, pid, (linux_sysc_arg_t)start_addr, options, 0, 0, 0);
 }
 
-void sys_execve(const char *filename, char *const *argv, const char *const *envp) {
+void sys_execve(const char *filename, char *const *argv, char *const *envp) {
     syscall(59, (linux_sysc_arg_t)filename, (linux_sysc_arg_t)argv, (linux_sysc_arg_t)envp, 0, 0, 0);
 }
 

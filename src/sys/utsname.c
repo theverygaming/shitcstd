@@ -1,6 +1,6 @@
 #include <sys/utsname.h>
-#include <linux/syscall.h>
+#include <abi-calls.h>
 
 int uname(struct utsname *buf) {
-    return sys_uname((struct linux_utsname *)buf);
+    return ABI_UNAME(buf);
 }

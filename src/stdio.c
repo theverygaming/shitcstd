@@ -1,4 +1,4 @@
-#include <linux/syscall.h>
+#include <abi-calls.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -37,7 +37,7 @@ FILE *fopen(const char *filename, const char *mode) {
         flags = O_RDWR;
     }
 
-    int fd = sys_open(filename, flags, 0);
+    int fd = open(filename, flags, 0);
     if (fd < 0) {
         return 0;
     }
@@ -50,7 +50,7 @@ FILE *fopen(const char *filename, const char *mode) {
 }
 
 int fclose(FILE *stream) {
-    if (sys_close(stream->fd) < 0) {
+    if (close(stream->fd) < 0) {
         return -1;
     }
     return 0;
@@ -60,18 +60,18 @@ size_t fread(void *buffer, size_t size, size_t count, FILE *stream) {
     if ((count * size) == 0) {
         return 0;
     }
-    ssize_t read = sys_read(stream->fd, buffer, size * count);
-    if (read < 0) {
+    ssize_t nread = read(stream->fd, buffer, size * count);
+    if (nread < 0) {
         return 0;
     }
-    return ((size_t)read) / size;
+    return ((size_t)nread) / size;
 }
 
 size_t fwrite(const void *buffer, size_t size, size_t count, FILE *stream) {
     if ((count * size) == 0) {
         return 0;
     }
-    ssize_t written = sys_write(stream->fd, buffer, size * count);
+    ssize_t written = write(stream->fd, buffer, size * count);
     if (written < 0) {
         return 0;
     }
@@ -79,7 +79,7 @@ size_t fwrite(const void *buffer, size_t size, size_t count, FILE *stream) {
 }
 
 long ftell(FILE *stream) {
-    off_t pos = sys_lseek(stream->fd, 0, SEEK_CUR);
+    off_t pos = lseek(stream->fd, 0, SEEK_CUR);
     if (pos < 0) {
         return -1;
     }
@@ -87,7 +87,7 @@ long ftell(FILE *stream) {
 }
 
 int fseek(FILE *stream, long offset, int whence) {
-    if (sys_lseek(stream->fd, offset, whence) < 0) {
+    if (lseek(stream->fd, offset, whence) < 0) {
         return -1;
     }
     return 0;
@@ -174,7 +174,7 @@ static int printf_base(va_list args, const char *fmt, FILE *stream, char *buf, b
                         memcpy(&buf[chars_written], "%", can_write);
                     }
                 } else {
-                    sys_write(stream->fd, "%", 1);
+                    write(stream->fd, "%", 1);
                 }
                 chars_written += 1;
                 break;
@@ -193,7 +193,7 @@ static int printf_base(va_list args, const char *fmt, FILE *stream, char *buf, b
                         memcpy(&buf[chars_written], arg, can_write);
                     }
                 } else {
-                    sys_write(stream->fd, arg, strlen(arg));
+                    write(stream->fd, arg, strlen(arg));
                 }
                 chars_written += strlen(arg);
                 break;
@@ -214,7 +214,7 @@ static int printf_base(va_list args, const char *fmt, FILE *stream, char *buf, b
                         memcpy(&buf[chars_written], ret, can_write);
                     }
                 } else {
-                    sys_write(stream->fd, ret, strlen(ret));
+                    write(stream->fd, ret, strlen(ret));
                 }
                 chars_written += strlen(ret);
                 break;
@@ -235,7 +235,7 @@ static int printf_base(va_list args, const char *fmt, FILE *stream, char *buf, b
                         memcpy(&buf[chars_written], ret, can_write);
                     }
                 } else {
-                    sys_write(stream->fd, ret, strlen(ret));
+                    write(stream->fd, ret, strlen(ret));
                 }
                 chars_written += strlen(ret);
                 break;
@@ -254,7 +254,7 @@ static int printf_base(va_list args, const char *fmt, FILE *stream, char *buf, b
                         memcpy(&buf[chars_written], &arg, can_write);
                     }
                 } else {
-                    sys_write(stream->fd, &arg, 1);
+                    write(stream->fd, &arg, 1);
                 }
                 chars_written++;
                 break;
@@ -276,7 +276,7 @@ static int printf_base(va_list args, const char *fmt, FILE *stream, char *buf, b
                 memcpy(&buf[chars_written], fmt, can_write);
             }
         } else {
-            sys_write(stream->fd, fmt, count);
+            write(stream->fd, fmt, count);
         }
         chars_written += count;
         fmt += count;
@@ -325,18 +325,18 @@ int vfprintf(FILE *stream, const char *fmt, va_list arg) {
 
 int getchar() {
     char buf;
-    sys_read(STDIN_FILENO, &buf, 1);
+    read(STDIN_FILENO, &buf, 1);
     return (int)buf;
 }
 
 int putchar(int c) {
-    sys_write(STDOUT_FILENO, &c, 1);
+    write(STDOUT_FILENO, &c, 1);
     return c;
 }
 
 int puts(const char *str) {
     size_t len = strlen(str);
-    sys_write(STDOUT_FILENO, str, len);
+    write(STDOUT_FILENO, str, len);
     return 0;
 }
 

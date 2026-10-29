@@ -1,4 +1,4 @@
-#include <linux/syscall.h>
+#include <abi-calls.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -8,7 +8,7 @@
 #include <unistd.h>
 
 void exit(int status) {
-    sys_exit(status);
+    ABI_EXIT(status);
     printf("OS skill issues\n");
     while (true) {}
 }

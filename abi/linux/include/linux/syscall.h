@@ -35,7 +35,7 @@ typedef unsigned short umode_t;
 int sys_open(const char *filename, int flags, umode_t mode);
 int sys_close(unsigned int fd);
 pid_t sys_waitpid(pid_t pid, int *stat_addr, int options);
-void sys_execve(const char *filename, char *const *argv, const char *const *envp);
+void sys_execve(const char *filename, char *const *argv, char *const *envp);
 int sys_chdir(const char *filename);
 void sys_time(time_t *tloc);
 off_t sys_lseek(unsigned int fd, off_t offset, unsigned int whence);
