@@ -4,14 +4,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <libc-init.h>
 
-FILE stdin_d = {STDIN_FILENO};
-FILE stdout_d = {STDOUT_FILENO};
-FILE stderr_d = {STDERR_FILENO};
+FILE *stdin;
+FILE *stdout;
+FILE *stderr;
 
-FILE *stdin = &stdin_d;
-FILE *stdout = &stdout_d;
-FILE *stderr = &stderr_d;
+void _libc_init_stdio() {
+    static FILE stdin_d = {STDIN_FILENO};
+    static FILE stdout_d = {STDOUT_FILENO};
+    static FILE stderr_d = {STDERR_FILENO};
+    
+    stdin = &stdin_d;
+    stdout = &stdout_d;
+    stderr = &stderr_d;
+}
 
 FILE *fopen(const char *filename, const char *mode) {
     bool read = false;
