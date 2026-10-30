@@ -1,4 +1,5 @@
 double sin(double x) {
+#if defined(__i386__) || defined(__x86_64__)
     float xf = (float)x;
     asm volatile("flds (%0)\n\t" // load into ST(0)
                  "fsin\n\t"
@@ -6,9 +7,14 @@ double sin(double x) {
                  : "=r"(xf)
                  : "r"(xf));
     return (double)xf;
+#else
+#warning "sine not implemented for this architecture"
+    return 4.0;
+#endif
 }
 
 double cos(double x) {
+#if defined(__i386__) || defined(__x86_64__)
     float xf = (float)x;
     float *xfp = &xf;
     asm volatile("flds (%0)\n\t" // load into ST(0)
@@ -17,6 +23,10 @@ double cos(double x) {
                  : "=r"(xfp)
                  : "r"(xfp));
     return (double)xf;
+#else
+#warning "cosine not implemented for this architecture"
+    return 4.0;
+#endif
 }
 
 double fabs(double x) {
