@@ -37,11 +37,11 @@ FILE *fopen(const char *filename, const char *mode) {
     }
     int flags = 0;
     if (read && !write) {
-        flags = O_RDONLY;
+        flags = ABI_O_RDONLY;
     } else if (!read && write) {
-        flags = O_WRONLY;
+        flags = ABI_O_WRONLY;
     } else if (read && write) {
-        flags = O_RDWR;
+        flags = ABI_O_RDWR;
     }
 
     int fd = open(filename, flags, 0);

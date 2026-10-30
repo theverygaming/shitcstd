@@ -1,5 +1,9 @@
 #pragma once
 
+#define ABI_O_RDONLY 0
+#define ABI_O_WRONLY 1
+#define ABI_O_RDWR 2
+
 static int abi_default_do_nothing() {
     return -1;
 }
