@@ -10,7 +10,7 @@ enable_language(ASM)
 
 add_compile_options(-fno-builtin -fno-stack-protector -nostdinc -nostdlib)
 
-set(ABIS "linux")
+set(ABIS "linux" "vix")
 if(NOT ABI IN_LIST ABIS)
     message(FATAL_ERROR "unsupported ABI '${ABI}', supported ABIs: ${ABIS}")
 endif()
