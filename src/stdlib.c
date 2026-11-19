@@ -123,3 +123,28 @@ int rand() {
 void srand(unsigned int seed) {
     rand_seed = seed + 621;
 }
+
+int system(const char *command) {
+    pid_t forked = fork();
+
+    if (forked < 0) {
+        return -1;
+    }
+
+    if (!forked) {
+        const char *arg_arr[] = {
+            "/bin/sh",
+            "-c",
+            command,
+            NULL,
+        };
+        // TODO: pass correct envp
+        execve(arg_arr[0], (char *const *)arg_arr, 0);
+        exit(127);
+    }
+    int status;
+    if (waitpid(forked, &status, 0) < 0) {
+        return -1;
+    }
+    return status;
+}
