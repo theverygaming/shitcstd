@@ -14,6 +14,7 @@ void srand(unsigned int seed);
 char *itoa(size_t value, char *str, size_t base);
 char *itoa_signed(ssize_t value, char *str, size_t base);
 int atoi(const char *str);
+double atof(const char *str);
 
 int abs(int n);
 

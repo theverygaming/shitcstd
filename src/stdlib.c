@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/wait.h>
+#include "helpers.h"
 
 void exit(int status) {
     ABI_EXIT(status);
@@ -73,19 +75,35 @@ char *itoa_signed(ssize_t value, char *str, size_t base) {
 }
 
 int atoi(const char *str) {
-    int num = 0;
+    return shitcstd_atoi_sized(str, strlen(str));
+}
+
+double atof(const char *str) {
+    double num = 0.0;
+    double divisor = 1.0;
     bool negative = false;
+    bool past_decimal = false;
     while (*str) {
-        if (*str == '-' && num == 0) {
+        if (*str == '-' && num == 0.0) {
             str++;
             negative = true;
+            continue;
+        }
+        if (*str == '.') {
+            str++;
+            past_decimal = true;
             continue;
         }
         if (*str < '0' || *str > '9') {
             break;
         }
         uint8_t current_num = *str - '0';
-        num = (num * 10) + current_num;
+        if (past_decimal) {
+            divisor *= 10.0;
+            num = num + (current_num / divisor);
+        } else {
+            num = (num * 10.0) + current_num;
+        }
         str++;
     }
     if (negative) {
