@@ -17,6 +17,13 @@ int tolower(int c) {
     return c;
 }
 
+int isspace(int ch) {
+    if (ch == ' ' || ch == '\f' || ch == '\n' || ch == '\r' || ch == '\t' || ch == '\v') {
+        return 1;
+    }
+    return 0;
+}
+
 void *memcpy(void *dest, const void *src, size_t n) {
     char *dest2 = (char *)dest;
     char *src2 = (char *)src;
