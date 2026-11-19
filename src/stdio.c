@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <libc-init.h>
+#include "helpers.h"
 
 FILE *stdin;
 FILE *stdout;
@@ -152,6 +153,10 @@ size_t sscanf(const char *str, const char *fmt, ...) {
                     break;
                 }
             }
+            default: {
+                fprintf(stderr, "sscanf: unsupported %%%c\n", *fmt);
+                break;
+            }
             }
         }
         instrcnt++;
@@ -162,11 +167,118 @@ ret:
     return items_filled;
 }
 
+#define PF_FMT_FLAG_LEFT_JUSTIFIED (1 << 0)
+#define PF_FMT_FLAG_LEADING_ZEROS (1 << 1)
+#define PF_FMT_FLAG_SHOW_POSITIVE_PLUS (1 << 2)
+#define PF_FMT_FLAG_SHOW_POSITIVE_SPACE (1 << 3)
+#define PF_FMT_FLAG_ALTERNATIVE (1 << 4)
+#define PF_FMT_PRECISION_NOT_SPECIFIED (-1)
+static const char *printf_parse_format_fields(va_list args, const char *fmt, unsigned int *flags, unsigned int *min_width, int *precision) {
+    *flags = 0;
+    *min_width = 0;
+    *precision = PF_FMT_PRECISION_NOT_SPECIFIED;
+
+    if (*fmt == '\0') {
+        return fmt;
+    }
+
+    // first check if there's any flags
+    while (*fmt == '-' || *fmt == '0' || *fmt == '+' || *fmt == ' ' || *fmt == '#') {
+        switch(*fmt) {
+            case '-': {
+                *flags |= PF_FMT_FLAG_LEFT_JUSTIFIED;
+                break;
+            }
+            case '0': {
+                *flags |= PF_FMT_FLAG_LEADING_ZEROS;
+                break;
+            }
+            case '+': {
+                *flags |= PF_FMT_FLAG_SHOW_POSITIVE_PLUS;
+                break;
+            }
+            case ' ': {
+                *flags |= PF_FMT_FLAG_SHOW_POSITIVE_SPACE;
+                break;
+            }
+            case '#': {
+                *flags |= PF_FMT_FLAG_ALTERNATIVE;
+                break;
+            }
+        }
+        fmt++;
+    }
+    if (*fmt == '\0') {
+        return fmt;
+    }
+
+    // minimum field width
+    if (*fmt == '*') {
+        int width = va_arg(args, int);
+        if (width < 0) {
+            *flags |= PF_FMT_FLAG_LEFT_JUSTIFIED;
+            width = -width;
+        }
+        *min_width = width;
+        fmt++;
+    } else {
+        const char *start = fmt;
+        while (*fmt >= '0' && *fmt <= '9') {
+            fmt++;
+        }
+        size_t n = fmt - start;
+        if (n != 0) {
+            *min_width = shitcstd_atoi_sized(start, n);
+        }
+    }
+    if (*fmt == '\0') {
+        return fmt;
+    }
+
+    // precision
+    if (*fmt == '.') {
+        fmt++;
+        if (*fmt == '\0') {
+            return fmt;
+        }
+        if (*fmt == '*') {
+            int a_precision = va_arg(args, int);
+            if (a_precision >= 0) {
+                *precision = a_precision;
+            }
+            fmt++;
+        } else {
+            const char *start = fmt;
+            while (*fmt >= '0' && *fmt <= '9') {
+                fmt++;
+            }
+            size_t n = fmt - start;
+            if (n != 0) {
+                *precision = shitcstd_atoi_sized(start, n);
+            } else {
+                // No number after . -> zero precision
+                *precision = 0;
+                fmt++;
+            }
+        }
+    }
+    if (*fmt == '\0') {
+        return fmt;
+    }
+
+    return fmt;
+}
+
 static int printf_base(va_list args, const char *fmt, FILE *stream, char *buf, bool buf_write, size_t buf_len) {
     size_t chars_written = 0;
     while (*fmt) {
         if (*fmt == '%') {
             fmt++;
+            unsigned int fmt_flags;
+            unsigned int min_width;
+            int precision;
+            fmt = printf_parse_format_fields(args, fmt, &fmt_flags, &min_width, &precision);
+
             switch (*fmt) {
             case '%': {
                 fmt += 1;
@@ -188,7 +300,7 @@ static int printf_base(va_list args, const char *fmt, FILE *stream, char *buf, b
             }
             case 's': {
                 fmt += 1;
-                char *arg = va_arg(args, char *);
+                const char *arg = va_arg(args, const char *);
                 if (buf_write) {
                     size_t can_write = (buf_len - 1) - chars_written;
                     if (chars_written > (buf_len - 1)) {
@@ -207,7 +319,7 @@ static int printf_base(va_list args, const char *fmt, FILE *stream, char *buf, b
             }
             case 'u': {
                 fmt += 1;
-                size_t arg = va_arg(args, size_t);
+                unsigned int arg = va_arg(args, unsigned int);
                 char n_buf[11];
                 char *ret = itoa(arg, n_buf, 10);
                 if (buf_write) {
@@ -226,11 +338,35 @@ static int printf_base(va_list args, const char *fmt, FILE *stream, char *buf, b
                 chars_written += strlen(ret);
                 break;
             }
+            case 'i':
             case 'd': {
                 fmt += 1;
-                size_t arg = va_arg(args, size_t);
+                int arg = va_arg(args, int);
                 char n_buf[12];
                 char *ret = itoa_signed(arg, n_buf, 10);
+                if (precision != PF_FMT_PRECISION_NOT_SPECIFIED) {
+                    // FIXME: HACK: this is very cursed and will break horribly with negative numbers (example: 000-123) :)
+                    size_t l = strlen(ret);
+                    if (l < precision) {
+                        size_t pad = precision - l;
+                        while (pad != 0) {
+                            if (buf_write) {
+                                size_t can_write = (buf_len - 1) - chars_written;
+                                if (chars_written > (buf_len - 1)) {
+                                    can_write = 0;
+                                }
+                                if (can_write >= 1) {
+                                    buf[chars_written] = '0';
+                                }
+                            } else {
+                                char w = '0';
+                                write(stream->fd, &w, 1);
+                            }
+                            chars_written++;
+                            pad--;
+                        }
+                    }
+                }
                 if (buf_write) {
                     size_t can_write = (buf_len - 1) - chars_written;
                     if (chars_written > (buf_len - 1)) {
