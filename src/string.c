@@ -32,6 +32,29 @@ void *memcpy(void *dest, const void *src, size_t n) {
     return dest;
 }
 
+void *memmove(void *dest, const void *src, size_t count) {
+    char *_src = (char *)src;
+    char *_dest = (char *)dest;
+
+    if (_src == _dest) {
+        return dest;
+    }
+
+    if (_dest < _src) {
+        while (count) {
+            *_dest++ = *_src++;
+            count--;
+        }
+    } else {
+        while (count) {
+            count--;
+            _dest[count] = _src[count];
+        }
+    }
+
+    return dest;
+}
+
 void *memset(void *ptr, int value, size_t num) {
     char *dest = (char *)ptr;
     while (num--)
