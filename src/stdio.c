@@ -352,3 +352,15 @@ void perror(const char *s) {
         printf("%s: \n", s);
     }
 }
+
+int rename(const char *old, const char *new) {
+    return ABI_RENAME(ABI_AT_FDCWD, old, ABI_AT_FDCWD, new, 0);
+}
+
+int remove(const char *pathname) {
+    int status = ABI_UNLINKAT(ABI_AT_FDCWD, pathname, 0);
+    if (status == ABI_EISDIR) {
+        status = ABI_UNLINKAT(ABI_AT_FDCWD, pathname, ABI_UNLINKAT_REMOVEDIR);
+    }
+    return status;
+}

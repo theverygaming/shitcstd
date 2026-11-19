@@ -37,3 +37,7 @@ int putchar(int c);
 int puts(const char *str);
 
 void perror(const char *s);
+
+int rename(const char *old, const char *new);
+
+int remove(const char *pathname);
